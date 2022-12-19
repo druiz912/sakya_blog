@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/', 'home');
-
+//
 Route::get('post/create', \App\Http\Livewire\PostCreate::class);
 Route::get('post/{slug}', \App\Http\Livewire\PostShow::class);
 Route::get('posts', \App\Http\Livewire\Posts::class)->name('posts');
