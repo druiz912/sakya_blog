@@ -41,14 +41,15 @@ class Posts extends Component
     public function store()
     {
         $validatedDate = $this->validate([
-            'title' => 'required',
-            'body' => 'required',
+            'title' => 'required|min:10|max:100',
+            'body' => 'required|min:10|max:1500',
         ]);
   
         Post::create($validatedDate);
-  
+        
+        // 
         session()->flash('message', 'Creado con éxito!');
-  
+        // Reseteamos los campos 
         $this->resetInputFields();
     }
   

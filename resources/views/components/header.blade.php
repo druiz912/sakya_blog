@@ -2,7 +2,8 @@
     <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
         <nav class="flex lg:w-2/5 flex-wrap items-center text-base md:ml-auto">
             <a href="/" class="mr-5 hover:text-gray-900">Inicio</a>
-            <a href="{{ route('posts') }}" class="mr-5 hover:text-gray-900">Todos los posts</a>
+            <a href="{{ route('allPosts') }}" class="mr-5 hover:text-gray-900">Posts</a>
+            <a href="/blog" class="mr-5 hover:text-gray-900">Cursos</a>
             <a href="/blog" class="mr-5 hover:text-gray-900">Blog</a>
         </nav>
         <a class="flex order-first lg:order-none lg:w-1/5 title-font font-bold items-center text-gray-900 lg:items-center lg:justify-center mb-4 md:mb-0">

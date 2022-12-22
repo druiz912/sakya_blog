@@ -6,7 +6,7 @@
     <title>@yield('title', 'Laravel Blog')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.9.6/tailwind.min.css">
     <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/typography@0.2.x/dist/typography.min.css" />
-    @livewireStyles
+    @livewireStyles 
 </head>
 <body>
     <x-header></x-header>
