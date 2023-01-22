@@ -18,7 +18,7 @@ class Post extends Model
     
     /**
      * hasMany -> Relación uno a muchos 
-     * 
+     * .
      */
 
     public function categories()
