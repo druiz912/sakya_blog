@@ -17,16 +17,23 @@ class Post extends Model
     protected $fillable = ['user_id', 'title', 'body', 'slug', 'published'];   
     
     /**
-     * hasMany -> Relación uno a muchos 
-     * .
+     * OneToMany Relationship 
      */
 
     public function categories()
     {
-        return $this->hasMany(Category::class)->withDefault([
+        return $this->belongsToMany(Category::class)->withDefault([
             'name' => 'oculus',
             'active' => 0,
             'color' => 'red'
         ]);
+    }
+
+    /**
+     * OneToMany Relationship 
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
