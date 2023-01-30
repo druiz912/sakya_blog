@@ -14,11 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // First you must create the categories so that there are no errors when creating the posts
+        \App\Models\Category::factory(10)->create();
         \App\Models\User::factory(10)->create();
         \App\Models\Post::factory(10)->create();
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        
     }
 }
