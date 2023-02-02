@@ -1,4 +1,4 @@
-@extends('layouts.app')  {{-- Plantilla principal  --}}
+  {{-- Plantilla principal  --}}
 
 @section('content')
 

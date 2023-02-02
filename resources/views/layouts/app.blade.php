@@ -10,7 +10,11 @@
 </head>
 <body>
     <x-header></x-header>
-
+    <div class="container">
+        <div class="row justify-content-center mt-3">
+            @livewire('posts')
+        </div>
+    </div>
     @yield('content')
 
     @livewireScripts
