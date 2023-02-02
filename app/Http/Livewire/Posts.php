@@ -1,116 +1,149 @@
 <?php
-
+ 
 namespace App\Http\Livewire;
-
+ 
 use Livewire\Component;
 use App\Models\Post;
-
+ 
 class Posts extends Component
 {
-    public $posts, $title, $body, $published, $featured , $post_id;
-    public $updateMode = false;
-   
+    // Atributos del modelo
+    public $posts, $title, $body, $postId;
+    // Atributos para el componente
+    public $updatePost = false, $addPost = false;
+
+    
+ 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * delete action listener
      */
-    public function render()
-    {
-        $this->posts = Post::all();
-        return view('livewire.post.posts')
-        ->extends('layouts.app')
-        ->section('content');
-    }
-  
+    protected $listeners = [
+        'deletePostListner'=>'deletePost'
+    ];
+ 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * List of add/edit form rules
      */
-    private function resetInputFields(){
+    protected $rules = [
+        'title' => 'required',
+        'body' => 'required'
+    ];
+ 
+    /**
+     * Reseting all inputted fields
+     * @return void
+     */
+    public function resetFields(){
         $this->title = '';
         $this->body = '';
     }
-   
+ 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * render the post data
+     * @return \Illuminate\Contracts\View\Factory|  \Illuminate\Contracts\View\View
      */
-    public function store()
+    public function render()
     {
-        $validatedDate = $this->validate([
-            'title' => 'required|min:10|max:100',
-            'body' => 'required|min:10|max:1500',
-        ]);
-  
-        Post::create($validatedDate);
-        
-        // 
-        session()->flash('message', 'Creado con éxito!');
-        // Reseteamos los campos 
-        $this->resetInputFields();
+        $this->posts = Post::select('id', 'title', 'body')->get();
+        return view('livewire.post.post');
     }
-  
+ 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * Open Add Post form
+     * @return void
      */
-    public function edit($id)
+    public function addPost()
     {
-        $post = Post::findOrFail($id);
-        $this->post_id = $id;
-        $this->title = $post->title;
-        $this->body = $post->body;
-  
-        $this->updateMode = true;
+        $this->resetFields();
+        $this->addPost = true;
+        $this->updatePost = false;
     }
-  
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    public function cancel()
+     /**
+      * store the user inputted post data in the posts table
+      * @return void
+      */
+    public function storePost()
     {
-        $this->updateMode = false;
-        $this->resetInputFields();
+        $this->validate();
+        try {
+            Posts::create([
+                'title' => $this->title,
+                'body' => $this->body
+            ]);
+            session()->flash('success','Post Created Successfully!!');
+            $this->resetFields();
+            $this->addPost = false;
+        } catch (\Exception $ex) {
+            session()->flash('error','Something goes wrong!!');
+        }
     }
-  
+ 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * show existing post data in edit post form
+     * @param mixed $id
+     * @return void
      */
-    public function update()
-    {
-        $validatedDate = $this->validate([
-            'title' => 'required',
-            'body' => 'required',
-        ]);
-  
-        $post = Post::find($this->post_id);
-        $post->update([
-            'title' => $this->title,
-            'body' => $this->body,
-        ]);
-  
-        $this->updateMode = false;
-  
-        session()->flash('message', 'Post Updated Successfully.');
-        $this->resetInputFields();
+    public function editPost($id){
+        try {
+            $post = Posts::findOrFail($id);
+            if( !$post) {
+                session()->flash('error','Post not found');
+            } else {
+                $this->title = $post->title;
+                $this->body = $post->body;
+                $this->postId = $post->id;
+                $this->updatePost = true;
+                $this->addPost = false;
+            }
+        } catch (\Exception $ex) {
+            session()->flash('error','Something goes wrong!!');
+        }
+ 
     }
-   
+ 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * update the post data
+     * @return void
      */
-    public function delete($id)
+    public function updatePost()
     {
-        Post::find($id)->delete();
-        session()->flash('message', 'Post Deleted Successfully.');
+        $this->validate();
+        try {
+            Posts::whereId($this->postId)->update([
+                'title' => $this->title,
+                'body' => $this->body
+            ]);
+            session()->flash('success','Post Updated Successfully!!');
+            $this->resetFields();
+            $this->updatePost = false;
+        } catch (\Exception $ex) {
+            session()->flash('success','Something goes wrong!!');
+        }
+    }
+ 
+    /**
+     * Cancel Add/Edit form and redirect to post listing page
+     * @return void
+     */
+    public function cancelPost()
+    {
+        $this->addPost = false;
+        $this->updatePost = false;
+        $this->resetFields();
+    }
+ 
+    /**
+     * delete specific post data from the posts table
+     * @param mixed $id
+     * @return void
+     */
+    public function deletePost($id)
+    {
+        try{
+            Posts::find($id)->delete();
+            session()->flash('success',"Post Deleted Successfully!!");
+        }catch(\Exception $e){
+            session()->flash('error',"Something goes wrong!!");
+        }
     }
 }
